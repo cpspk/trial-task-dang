@@ -10,11 +10,9 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, session }) => (
   <SessionProvider session={session}>
-    <main className="md:container">
-      <SecureRoutes>
-        {children}
-      </SecureRoutes>
-    </main>
+    <SecureRoutes>
+      {children}
+    </SecureRoutes>
   </SessionProvider>
 )
 

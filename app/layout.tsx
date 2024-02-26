@@ -15,25 +15,25 @@ export const fontSans = FontSans({
   variable: "--font-sans",
 })
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-        )}
-        suppressHydrationWarning
-      >
-        <Provider>
-          {children}
-          <Toaster />
-        </Provider>
-      </body>
-    </html>
-  );
+export interface LayoutProps {
+  children: React.ReactNode
 }
+
+const RootLayout: React.FC<LayoutProps> = ({ children }) => (
+  <html lang="en">
+    <body
+      className={cn(
+        "min-h-screen bg-background font-sans antialiased",
+        fontSans.variable
+      )}
+      suppressHydrationWarning
+    >
+      <Provider>
+        {children}
+        <Toaster />
+      </Provider>
+    </body>
+  </html>
+)
+
+export default RootLayout
