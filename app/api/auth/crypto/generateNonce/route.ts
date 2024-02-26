@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server"
-import { prisma } from "@/prisma";
+import prisma from "@/prisma";
 import crypto from "crypto";
 
 interface CryptoNonceResponse {
@@ -25,6 +25,8 @@ export async function POST(request: NextRequest) {
 
     // Create or update the nonce for the given user
     //  see: https://www.prisma.io/docs/reference/api-reference/prisma-client-reference#upsert
+    console.log(nonce, expires)
+    // console.log("**********", await prisma.user.findMany())
     await prisma.user.upsert({
       where: { walletAddress },
       create: {
@@ -57,6 +59,7 @@ export async function POST(request: NextRequest) {
       expires: expires.toISOString(),
     })
   } catch (e) {
+    console.log("((((((((", e)
     return NextResponse.json(
       {
         message: `Error making payment: ${e}`,

@@ -1,4 +1,4 @@
-import { prisma } from "@/prisma";
+import prisma from "@/prisma";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { ethers } from "ethers";
 import NextAuth, { AuthOptions, RequestInternal } from "next-auth";
