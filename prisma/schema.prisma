@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  // shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id               Int               @id @default(autoincrement())
+  email            String            @unique @default("") @db.VarChar(255)
+  password         String            @default("") @db.VarChar(255)
+  address          String            @default("") @db.VarChar(255)
+  walletAddress    String?           @unique @map("wallet_address") @db.VarChar(255)
+  cryptoLoginNonce CryptoLoginNonce?
+  Layout           Layout[]
+
+  @@index([email], name: "idx_email")
+  @@index([walletAddress], name: "idx_wallet_address")
+  @@map("users")
+}
+
+model Layout {
+  id           Int           @id @default(autoincrement())
+  userId       Int           @map("user_id")
+  layout_name  String        @db.VarChar(255)
+  user         User          @relation(fields: [userId], references: [id])
+  layoutWidget LayoutWidget?
+
+  // layoutWidget LayoutWidget
+  @@map("layouts")
+}
+
+model Widget {
+  id                Int           @id @default(autoincrement())
+  widgetName        String        @map("widget_name") @db.VarChar(255)
+  widgetDescription String?       @map("widget_description") @db.VarChar(255)
+  widgetConfig      Json?         @map("widget_config")
+  LayoutWidget      LayoutWidget?
+
+  @@map("widgets")
+}
+
+model LayoutWidget {
+  layoutId Int    @unique @map("layout_id")
+  widgetId Int    @unique @map("widget_id")
+  layout   Layout @relation(fields: [layoutId], references: [id])
+  widget   Widget @relation(fields: [widgetId], references: [id])
+
+  @@id([layoutId, widgetId])
+  @@index([layoutId], name: "idx_layout_id")
+  @@index([widgetId], name: "idx_widget_id")
+  @@map("layout_widgets")
+}
+
+// Added for crypto authentication
+model CryptoLoginNonce {
+  userId  Int      @unique @map("user_id")
+  nonce   String   @db.VarChar(255)
+  expires DateTime
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("crypto_loginnonces")
+}
