@@ -14,7 +14,6 @@ const SecureRoutes: React.FC<SecureRoutesProps> = ({ children }) => {
     return children
   }
 
-  console.log(pathname, status)
   if (pathname === "/auth" && status === "authenticated") {
     redirect("/dashboard")
   }

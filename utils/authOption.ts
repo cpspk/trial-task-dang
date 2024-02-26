@@ -70,7 +70,7 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   // Setting secret here for convenience, do not use this in production
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET,
 
   callbacks: {
     async jwt({ token, user }) {
