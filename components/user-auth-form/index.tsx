@@ -4,7 +4,6 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
-// import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -20,8 +19,6 @@ declare global {
 }
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { }
-
-
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const { toast } = useToast()
@@ -60,14 +57,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       // Sign the received nonce
       const signedNonce = await signer.signMessage(responseData.nonce);
 
-      setIsLoading(false)
-
       // Use NextAuth to sign in with our address and the nonce
       await signIn("crypto", {
         walletAddress,
         signedNonce,
-        callbackUrl: "/",
+        callbackUrl: "/dashboard",
       });
+
+      setIsLoading(false)
     } catch {
       toast({
         variant: "destructive",

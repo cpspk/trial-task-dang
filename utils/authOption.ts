@@ -1,8 +1,8 @@
-import prisma from "@/prisma";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { ethers } from "ethers";
-import NextAuth, { AuthOptions, RequestInternal } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "@/prisma"
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { ethers } from "ethers"
+import NextAuth, { AuthOptions, RequestInternal } from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
 
 // Authorization function for crypto login
 async function authorizeCrypto(
@@ -36,10 +36,6 @@ async function authorizeCrypto(
   // Everything is fine, clear the nonce and return the user
   await prisma.cryptoLoginNonce.delete({ where: { userId: user.id } });
 
-  // return {
-  //   id: user.id,
-  //   walletAddress: user.walletAddress,
-  // };
   return {
     id: Number(user?.id) as unknown as string,
     walletAddress: user.walletAddress,

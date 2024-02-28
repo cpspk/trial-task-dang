@@ -29,18 +29,16 @@ CREATE TABLE "widgets" (
 );
 
 -- CreateTable
-CREATE TABLE "layout_widgets" (
-    "layout_id" INTEGER NOT NULL,
-    "widget_id" INTEGER NOT NULL,
-
-    CONSTRAINT "layout_widgets_pkey" PRIMARY KEY ("layout_id","widget_id")
-);
-
--- CreateTable
 CREATE TABLE "crypto_loginnonces" (
     "user_id" INTEGER NOT NULL,
     "nonce" VARCHAR(255) NOT NULL,
     "expires" TIMESTAMP(3) NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_LayoutToWidget" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
 );
 
 -- CreateIndex
@@ -56,28 +54,22 @@ CREATE INDEX "idx_email" ON "users"("email");
 CREATE INDEX "idx_wallet_address" ON "users"("wallet_address");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "layout_widgets_layout_id_key" ON "layout_widgets"("layout_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "layout_widgets_widget_id_key" ON "layout_widgets"("widget_id");
-
--- CreateIndex
-CREATE INDEX "idx_layout_id" ON "layout_widgets"("layout_id");
-
--- CreateIndex
-CREATE INDEX "idx_widget_id" ON "layout_widgets"("widget_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "crypto_loginnonces_user_id_key" ON "crypto_loginnonces"("user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_LayoutToWidget_AB_unique" ON "_LayoutToWidget"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_LayoutToWidget_B_index" ON "_LayoutToWidget"("B");
 
 -- AddForeignKey
 ALTER TABLE "layouts" ADD CONSTRAINT "layouts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "layout_widgets" ADD CONSTRAINT "layout_widgets_layout_id_fkey" FOREIGN KEY ("layout_id") REFERENCES "layouts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "layout_widgets" ADD CONSTRAINT "layout_widgets_widget_id_fkey" FOREIGN KEY ("widget_id") REFERENCES "widgets"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "crypto_loginnonces" ADD CONSTRAINT "crypto_loginnonces_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_LayoutToWidget" ADD CONSTRAINT "_LayoutToWidget_A_fkey" FOREIGN KEY ("A") REFERENCES "layouts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_LayoutToWidget" ADD CONSTRAINT "_LayoutToWidget_B_fkey" FOREIGN KEY ("B") REFERENCES "widgets"("id") ON DELETE CASCADE ON UPDATE CASCADE;

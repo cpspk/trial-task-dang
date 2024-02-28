@@ -1,11 +1,6 @@
 import { NextResponse, NextRequest } from "next/server"
-import prisma from "@/prisma";
-import crypto from "crypto";
-
-interface CryptoNonceResponse {
-  nonce: string;
-  expires: string;
-}
+import prisma from "@/prisma"
+import crypto from "crypto"
 
 // Generating a nonce is the first step of both registering and logging in.
 // Later steps of both logging in and registering require the user to sign
