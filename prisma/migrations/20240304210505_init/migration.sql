@@ -14,6 +14,7 @@ CREATE TABLE "layouts" (
     "id" SERIAL NOT NULL,
     "user_id" INTEGER NOT NULL,
     "layout_name" VARCHAR(255) NOT NULL,
+    "layout_config" JSONB,
 
     CONSTRAINT "layouts_pkey" PRIMARY KEY ("id")
 );

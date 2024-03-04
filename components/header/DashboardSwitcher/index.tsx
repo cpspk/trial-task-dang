@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState, useEffect } from "react"
 import {
   CaretSortIcon,
@@ -55,10 +57,13 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Layout, Widget } from "@prisma/client"
+import { useDashboard } from "@/app/providers/dashboardProvider"
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
 
-interface DashboardSwitcherProps extends PopoverTriggerProps { }
+interface DashboardSwitcherProps extends PopoverTriggerProps {
+  widgets: Widget[]
+}
 
 const FormSchema = z.object({
   dashboardname: z.string().min(2, {
@@ -67,19 +72,14 @@ const FormSchema = z.object({
   widgets: z.array(z.object({ label: z.string(), value: z.string() }))
 })
 
-export default function DashboardSwitcher({ className }: DashboardSwitcherProps) {
+export default function DashboardSwitcher({ className, widgets }: DashboardSwitcherProps) {
   const [open, setOpen] = useState(false)
   const [showNewDashboardDialog, setShowNewDashboardDialog] = useState(false)
-  const [selectedDashboard, setSelectedDashboard] = useState<Partial<Layout>>({})
+  const { selectedDashboard, setSelectedDashboard } = useDashboard()
 
   const { data: dashboards, refetch } = useQuery<(Layout & { widgets: Widget[] })[]>({
     queryKey: ["layouts"],
     queryFn: () => fetch("/api/layouts").then((res) => res.json()),
-  })
-
-  const { data: widgets } = useQuery<(Widget & { layouts: Layout[] })[]>({
-    queryKey: ["widgets"],
-    queryFn: () => fetch("/api/widgets").then((res) => res.json()),
   })
 
   const defaultWidgets: Option[] = widgets ? widgets?.map(widget => {
@@ -94,7 +94,9 @@ export default function DashboardSwitcher({ className }: DashboardSwitcherProps)
       if (dashboards.length > 0) {
         setSelectedDashboard({
           id: dashboards[dashboards.length - 1].id,
-          layoutName: dashboards[dashboards.length - 1].layoutName
+          layoutName: dashboards[dashboards.length - 1].layoutName,
+          layoutConfig: dashboards[dashboards.length - 1].layoutConfig as number[][],
+          widgets: dashboards[dashboards.length - 1].widgets
         })
       } else {
         setSelectedDashboard({})
@@ -123,10 +125,9 @@ export default function DashboardSwitcher({ className }: DashboardSwitcherProps)
   })
 
   const { mutate: deleteDashboard } = useMutation({
-    mutationFn: (id: Number) =>
+    mutationFn: (id: number) =>
       fetch("/api/layouts/" + id, {
         method: "DELETE",
-        body: JSON.stringify({ id }),
       }).then(() => {
         refetch()
       }),
@@ -166,11 +167,16 @@ export default function DashboardSwitcher({ className }: DashboardSwitcherProps)
             <CommandList>
               <CommandInput placeholder="Search dashboard..." />
               <CommandEmpty>No dashboard found.</CommandEmpty>
-              {dashboards && dashboards.map((dashboard) => (
+              {dashboards?.map((dashboard) => (
                 <CommandItem
                   key={dashboard.id}
                   onSelect={() => {
-                    setSelectedDashboard(dashboard)
+                    setSelectedDashboard({
+                      id: dashboard.id,
+                      layoutName: dashboard.layoutName,
+                      layoutConfig: dashboard.layoutConfig as number[][],
+                      widgets: dashboard.widgets
+                    })
                     setOpen(false)
                   }}
                   className="text-sm"

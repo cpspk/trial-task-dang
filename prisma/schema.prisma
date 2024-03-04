@@ -25,11 +25,12 @@ model User {
 }
 
 model Layout {
-  id         Int      @id @default(autoincrement())
-  userId     Int      @map("user_id")
-  layoutName String   @map("layout_name") @db.VarChar(255)
-  user       User     @relation(fields: [userId], references: [id])
-  widgets    Widget[]
+  id           Int      @id @default(autoincrement())
+  userId       Int      @map("user_id")
+  layoutName   String   @map("layout_name") @db.VarChar(255)
+  layoutConfig Json?    @map("layout_config")
+  user         User     @relation(fields: [userId], references: [id])
+  widgets      Widget[]
 
   // layoutWidget LayoutWidget
   @@map("layouts")

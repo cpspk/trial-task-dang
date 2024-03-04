@@ -33,10 +33,22 @@ export async function POST(request: NextRequest) {
 
   const { dashboardname, widgets } = await request.json()
 
+  const layoutConfig: number[][] = [
+    [],
+    [],
+    [],
+    [],
+  ]
+
+  widgets.forEach((widget: { id: number }, index: number) => {
+    layoutConfig[index % 4].push(widget.id)
+  });
+
   const layout = await prisma.layout.create({
     data: {
       userId: session.user.id,
       layoutName: dashboardname,
+      layoutConfig: layoutConfig,
       widgets: {
         connect: widgets
       }
