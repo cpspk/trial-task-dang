@@ -35,9 +35,17 @@ model Layout {
   @@map("layouts")
 }
 
+enum WidgetName {
+  EmbedWidget
+  RssNewsReader
+  StockChart
+  PriceTicker
+  PortfolioTracker
+}
+
 model Widget {
   id                Int             @id @default(autoincrement())
-  widgetName        String          @map("widget_name") @db.VarChar(255)
+  widgetName        WidgetName          @map("widget_name")
   widgetDescription String?         @map("widget_description") @db.VarChar(255)
   layouts           LayoutWidgets[]
 
