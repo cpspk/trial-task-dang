@@ -58,6 +58,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Layout, LayoutWidgets, Widget } from "@prisma/client"
 import { useDashboard } from "@/app/providers/dashboardProvider"
+import { checkKeyDown } from "@/utils/keyDown"
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
 
@@ -136,6 +137,8 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
   function onSubmit(data: z.infer<typeof FormSchema>) {
     createDashboard(data)
     setShowNewDashboardDialog(false)
+    setToggleLayoutEdit(false)
+    form.reset()
   }
 
   const handleResetForm = () => {
@@ -159,7 +162,7 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
             aria-label="Select a dashboard"
             className={cn("w-[200px] justify-between", className)}
           >
-            {selectedDashboard.layoutName}
+            {selectedDashboard.layoutName === undefined ? 'Dashboards' : selectedDashboard.layoutName}
             <CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -242,7 +245,7 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
       </Popover>
       <DialogContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} onKeyDown={(e) => checkKeyDown(e)} className="space-y-6">
             <DialogHeader>
               <DialogTitle>Create Dashboard</DialogTitle>
               <DialogDescription>

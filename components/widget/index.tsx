@@ -1,12 +1,12 @@
-import React from "react"
+import React, { useState } from "react"
 import { Widget as PrismaWidget } from "@prisma/client"
 import { Draggable } from "react-beautiful-dnd"
 import { useDashboard } from "@/app/providers/dashboardProvider"
-import { Button } from "../ui/button"
-import { cn } from "@/lib/utils"
-import { Cross2Icon } from "@radix-ui/react-icons"
+import { Button } from "@/components/ui/button"
+import { Cross2Icon, GearIcon } from "@radix-ui/react-icons"
 import { useMutation } from "@tanstack/react-query"
-import { Embed } from "./embed"
+import { Separator } from "@/components/ui/separator"
+import { Content } from "./content"
 
 export const Widget: React.FC<{
   widget: PrismaWidget,
@@ -38,18 +38,10 @@ export const Widget: React.FC<{
     }
   })
 
+  const [settingMode, setSettingMode] = useState(false)
+
   const handleRemoveWidget = (id: number) => () => {
     removeWidget(id)
-  }
-
-  const widgetContent = () => {
-    switch (widget.widgetName) {
-      case "Embed Widget":
-        // return <Embed widgetConfig={} />
-        return <div></div>
-      default:
-        return <></>
-    }
   }
 
   return (
@@ -60,26 +52,38 @@ export const Widget: React.FC<{
     >
       {provided => (
         <div
-          className="border-2 rounded min-h-10 p-1 m-2 select-none"
+          className="border-2 rounded p-1 m-2 select-none"
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
           <div className="flex items-center">
-            <div className="mr-2">
-              {widget.widgetName}
-            </div>
+            <div className="mr-2">{widget.widgetName}</div>
             {toggleLayoutEdit && (
-              <Button
-                variant="outline"
-                onClick={handleRemoveWidget(layoutWidgetId)}
-                className={cn("ml-auto")}
-              >
-                <Cross2Icon />
-              </Button>
+              <div className="flex ml-auto">
+                <Button
+                  variant="outline"
+                  onClick={() => setSettingMode(true)}
+                >
+                  <GearIcon />
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleRemoveWidget(layoutWidgetId)}
+                  className="ml-1"
+                >
+                  <Cross2Icon />
+                </Button>
+              </div>
             )}
           </div>
-          {widgetContent()}
+          <Separator className="my-1" />
+          <Content
+            widget={widget}
+            layoutWidgetId={layoutWidgetId}
+            settingMode={settingMode}
+            setSettingMode={setSettingMode}
+          />
         </div>
       )}
     </Draggable>

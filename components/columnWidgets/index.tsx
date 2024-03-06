@@ -26,7 +26,7 @@ export const ColumnWidgets: React.FC<{ layoutWidgetIds: number[], index: number 
   const widgetMap = Object.fromEntries(widgets.map(widget => ([widget.id, widget])))
 
   return (
-    <div className="p-2 min-w-32">
+    <div className="p-2 min-w-32 min-h-32 w-1/4">
       <Droppable droppableId={index.toString()}>
         {(provided, snapshot) => {
 

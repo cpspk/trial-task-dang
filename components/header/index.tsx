@@ -77,7 +77,7 @@ export const Header = () => {
         {selectedDashboard.id && (
           <div className="flex flex-wrap">
             <div className="flex items-center space-x-2 ml-2">
-              <Switch id="airplane-mode" onCheckedChange={handleEditDashboard} />
+              <Switch id="airplane-mode" checked={toggleLayoutEdit} onCheckedChange={handleEditDashboard} />
               <Label htmlFor="airplane-mode">Edit Dashboard</Label>
             </div>
             {toggleLayoutEdit && (

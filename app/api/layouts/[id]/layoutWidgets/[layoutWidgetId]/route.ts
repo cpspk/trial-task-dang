@@ -3,6 +3,29 @@ import { getServerSession } from "next-auth"
 import { NextResponse, NextRequest } from "next/server"
 import { authOptions } from "@/utils/authOption"
 
+export async function PUT(request: NextRequest, { params }: { params: { layoutWidgetId: string } }) {
+  const session = await getServerSession(authOptions)
+
+  if (!session) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+  }
+
+  const layoutWidgetId = Number(params.layoutWidgetId)
+
+  const { widgetConfig } = await request.json()
+
+  const layoutWidget = await prisma.layoutWidgets.update({
+    where: {
+      id: layoutWidgetId
+    },
+    data: {
+      widgetConfig
+    }
+  })
+
+  return NextResponse.json(layoutWidget, { status: 200 })
+}
+
 export async function DELETE(request: NextRequest, { params }: { params: { id: string, layoutWidgetId: string } }) {
   const session = await getServerSession(authOptions)
 
