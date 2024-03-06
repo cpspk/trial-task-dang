@@ -56,7 +56,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Layout, Widget } from "@prisma/client"
+import { Layout, LayoutWidgets, Widget } from "@prisma/client"
 import { useDashboard } from "@/app/providers/dashboardProvider"
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
@@ -75,9 +75,9 @@ const FormSchema = z.object({
 export default function DashboardSwitcher({ className, widgets }: DashboardSwitcherProps) {
   const [open, setOpen] = useState(false)
   const [showNewDashboardDialog, setShowNewDashboardDialog] = useState(false)
-  const { selectedDashboard, setSelectedDashboard } = useDashboard()
+  const { selectedDashboard, setSelectedDashboard, setToggleLayoutEdit } = useDashboard()
 
-  const { data: dashboards, refetch } = useQuery<(Layout & { widgets: Widget[] })[]>({
+  const { data: dashboards, refetch } = useQuery<(Layout & { widgets: LayoutWidgets[] })[]>({
     queryKey: ["layouts"],
     queryFn: () => fetch("/api/layouts").then((res) => res.json()),
   })
@@ -145,6 +145,7 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
 
   const handleDeleteDashboard = (id: number) => {
     deleteDashboard(id)
+    setToggleLayoutEdit(false)
   }
 
   return (
@@ -271,7 +272,7 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
                     name="widgets"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Widgets</FormLabel>
+                        <FormLabel>Widgets (Pick order arranges initial layout)</FormLabel>
                         <FormControl>
                           <MultipleSelector
                             defaultOptions={defaultWidgets ? defaultWidgets : []}

@@ -32,6 +32,20 @@ export async function POST(request: NextRequest) {
   }
 
   const { dashboardname, widgets } = await request.json()
+  const layoutWidgets = widgets.map((widget: { id: number }) => { return { widget: { connect: widget } } })
+
+  const layout = await prisma.layout.create({
+    data: {
+      userId: session.user.id,
+      layoutName: dashboardname,
+      widgets: {
+        create: layoutWidgets
+      }
+    },
+    include: {
+      widgets: true
+    }
+  })
 
   const layoutConfig: number[][] = [
     [],
@@ -40,23 +54,17 @@ export async function POST(request: NextRequest) {
     [],
   ]
 
-  widgets.forEach((widget: { id: number }, index: number) => {
-    layoutConfig[index % 4].push(widget.id)
+  layout.widgets.forEach((layoutWidget, index) => {
+    layoutConfig[index % 4].push(layoutWidget.id)
   });
 
-  const layout = await prisma.layout.create({
-    data: {
-      userId: session.user.id,
-      layoutName: dashboardname,
-      layoutConfig: layoutConfig,
-      widgets: {
-        connect: widgets
-      }
+  const updatedLayout = await prisma.layout.update({
+    where: {
+      id: layout.id
     },
-    include: {
-      widgets: true
+    data: {
+      layoutConfig
     }
   })
-
-  return NextResponse.json(layout, { status: 201 })
+  return NextResponse.json(updatedLayout, { status: 201 })
 }

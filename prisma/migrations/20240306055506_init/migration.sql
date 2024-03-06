@@ -24,7 +24,6 @@ CREATE TABLE "widgets" (
     "id" SERIAL NOT NULL,
     "widget_name" VARCHAR(255) NOT NULL,
     "widget_description" VARCHAR(255),
-    "widget_config" JSONB,
 
     CONSTRAINT "widgets_pkey" PRIMARY KEY ("id")
 );
@@ -37,9 +36,13 @@ CREATE TABLE "crypto_loginnonces" (
 );
 
 -- CreateTable
-CREATE TABLE "_LayoutToWidget" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
+CREATE TABLE "LayoutWidgets" (
+    "id" SERIAL NOT NULL,
+    "layout_id" INTEGER NOT NULL,
+    "widget_id" INTEGER NOT NULL,
+    "widget_config" JSONB,
+
+    CONSTRAINT "LayoutWidgets_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -57,12 +60,6 @@ CREATE INDEX "idx_wallet_address" ON "users"("wallet_address");
 -- CreateIndex
 CREATE UNIQUE INDEX "crypto_loginnonces_user_id_key" ON "crypto_loginnonces"("user_id");
 
--- CreateIndex
-CREATE UNIQUE INDEX "_LayoutToWidget_AB_unique" ON "_LayoutToWidget"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_LayoutToWidget_B_index" ON "_LayoutToWidget"("B");
-
 -- AddForeignKey
 ALTER TABLE "layouts" ADD CONSTRAINT "layouts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -70,7 +67,7 @@ ALTER TABLE "layouts" ADD CONSTRAINT "layouts_user_id_fkey" FOREIGN KEY ("user_i
 ALTER TABLE "crypto_loginnonces" ADD CONSTRAINT "crypto_loginnonces_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_LayoutToWidget" ADD CONSTRAINT "_LayoutToWidget_A_fkey" FOREIGN KEY ("A") REFERENCES "layouts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "LayoutWidgets" ADD CONSTRAINT "LayoutWidgets_layout_id_fkey" FOREIGN KEY ("layout_id") REFERENCES "layouts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_LayoutToWidget" ADD CONSTRAINT "_LayoutToWidget_B_fkey" FOREIGN KEY ("B") REFERENCES "widgets"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "LayoutWidgets" ADD CONSTRAINT "LayoutWidgets_widget_id_fkey" FOREIGN KEY ("widget_id") REFERENCES "widgets"("id") ON DELETE CASCADE ON UPDATE CASCADE;

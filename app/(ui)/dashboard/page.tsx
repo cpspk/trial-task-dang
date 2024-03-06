@@ -69,10 +69,10 @@ const Dashboard = () => {
         onDragEnd={onDragEnd}
       >
         <div className="flex flex-wrap justify-between m-2">
-          {selectedDashboard.layoutConfig?.map((columnWidgetsIds, index) =>
+          {selectedDashboard.layoutConfig?.map((columnLayoutWidgetsIds, index) =>
             <ColumnWidgets
               key={index}
-              widgetIds={columnWidgetsIds}
+              layoutWidgetIds={columnLayoutWidgetsIds}
               index={index}
             />
           )}

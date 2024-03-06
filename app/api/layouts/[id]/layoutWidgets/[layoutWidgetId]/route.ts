@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth"
 import { NextResponse, NextRequest } from "next/server"
 import { authOptions } from "@/utils/authOption"
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string, widgetId: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string, layoutWidgetId: string } }) {
   const session = await getServerSession(authOptions)
 
   if (!session) {
@@ -11,7 +11,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
   }
 
   const id = Number(params.id)
-  const widgetId = Number(params.widgetId)
+  const layoutWidgetId = Number(params.layoutWidgetId)
 
   const { layoutConfig } = await request.json()
 
@@ -20,15 +20,24 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       id
     },
     data: {
-      layoutConfig,
-      widgets: {
-        disconnect: [{ id: widgetId }]
-      }
+      layoutConfig
+    }
+  })
+
+  await prisma.layoutWidgets.delete({
+    where: {
+      id: layoutWidgetId
+    }
+  })
+
+  const updatedLayout = await prisma.layout.findUnique({
+    where: {
+      id: layout.id
     },
     include: {
       widgets: true
     }
   })
 
-  return NextResponse.json(layout, { status: 202 })
+  return NextResponse.json(updatedLayout, { status: 202 })
 }

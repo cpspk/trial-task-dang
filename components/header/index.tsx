@@ -17,7 +17,12 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 export const Header = () => {
   const { data } = useSession()
   const walletAddress = data?.user.walletAddress.substring(0, 7) + '...' + data?.user.walletAddress.substring(data?.user.walletAddress.length - 5)
-  const { selectedDashboard, setSelectedDashboard, toggleLayoutEdit, setToggleLayoutEdit } = useDashboard()
+  const {
+    selectedDashboard,
+    setSelectedDashboard,
+    toggleLayoutEdit,
+    setToggleLayoutEdit
+  } = useDashboard()
 
   const { data: widgets } = useQuery<(Widget)[]>({
     queryKey: ["widgets"],
@@ -26,14 +31,10 @@ export const Header = () => {
 
   const { mutate: addWidget } = useMutation({
     mutationFn: (id: number) => {
-      const layoutConfig = selectedDashboard.layoutConfig
-      layoutConfig?.[0].push(id)
-
-      return fetch("/api/layouts/" + selectedDashboard.id + "/widgets", {
+      return fetch("/api/layouts/" + selectedDashboard.id + "/layoutWidgets", {
         method: "POST",
         body: JSON.stringify({
           id,
-          layoutConfig
         }),
       }).then(res => res.json()).then(res => {
         setSelectedDashboard({
@@ -56,8 +57,6 @@ export const Header = () => {
   const handleAddWidget = (id: string) => {
     addWidget(Number(id))
   }
-
-  const remainingWidgets = widgets?.filter(widget => !selectedDashboard.widgets?.map(dashboradWidget => dashboradWidget.id).includes(widget.id))
 
   return (
     <div className="border-b">
@@ -88,8 +87,8 @@ export const Header = () => {
                     <SelectValue placeholder="Add a widget" />
                   </SelectTrigger>
                   <SelectContent>
-                    {remainingWidgets?.map(remainingWidget => (
-                      <SelectItem key={remainingWidget.id} value={remainingWidget.id.toString()}>{remainingWidget.widgetName}</SelectItem>
+                    {widgets?.map(widget => (
+                      <SelectItem key={widget.id} value={widget.id.toString()}>{widget.widgetName}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

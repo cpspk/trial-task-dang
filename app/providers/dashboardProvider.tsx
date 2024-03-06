@@ -1,10 +1,10 @@
 "use client"
 
-import { Layout, Widget } from '@prisma/client';
+import { Layout, LayoutWidgets } from '@prisma/client';
 import React, { createContext, useContext, useState } from 'react';
 
 type DashboardContextType = {
-  selectedDashboard: Partial<Layout & { layoutConfig: number[][], widgets: Widget[] }>
+  selectedDashboard: Partial<Layout & { layoutConfig: number[][], widgets: LayoutWidgets[] }>
   setSelectedDashboard: (value: DashboardContextType['selectedDashboard']) => void
   toggleLayoutEdit: boolean
   setToggleLayoutEdit: (value: boolean) => void

@@ -6,15 +6,24 @@ import { Button } from "../ui/button"
 import { cn } from "@/lib/utils"
 import { Cross2Icon } from "@radix-ui/react-icons"
 import { useMutation } from "@tanstack/react-query"
+import { Embed } from "./embed"
 
-export const Widget: React.FC<{ widget: PrismaWidget, index: number }> = ({ widget, index }) => {
-  const { toggleLayoutEdit, selectedDashboard, setSelectedDashboard } = useDashboard()
+export const Widget: React.FC<{
+  widget: PrismaWidget,
+  index: number,
+  layoutWidgetId: number
+}> = ({ widget, index, layoutWidgetId }) => {
+  const {
+    toggleLayoutEdit,
+    selectedDashboard,
+    setSelectedDashboard
+  } = useDashboard()
 
   const { mutate: removeWidget } = useMutation({
     mutationFn: (id: number) => {
       const layoutConfig = selectedDashboard.layoutConfig?.map(column => column.filter(widgetId => widgetId !== id))
 
-      return fetch("/api/layouts/" + selectedDashboard.id + "/widgets/" + id, {
+      return fetch("/api/layouts/" + selectedDashboard.id + "/layoutWidgets/" + id, {
         method: "DELETE",
         body: JSON.stringify({
           layoutConfig
@@ -33,9 +42,19 @@ export const Widget: React.FC<{ widget: PrismaWidget, index: number }> = ({ widg
     removeWidget(id)
   }
 
+  const widgetContent = () => {
+    switch (widget.widgetName) {
+      case "Embed Widget":
+        // return <Embed widgetConfig={} />
+        return <div></div>
+      default:
+        return <></>
+    }
+  }
+
   return (
     <Draggable
-      draggableId={widget.id.toString()}
+      draggableId={layoutWidgetId.toString()}
       index={index}
       isDragDisabled={!toggleLayoutEdit}
     >
@@ -53,13 +72,14 @@ export const Widget: React.FC<{ widget: PrismaWidget, index: number }> = ({ widg
             {toggleLayoutEdit && (
               <Button
                 variant="outline"
-                onClick={handleRemoveWidget(widget.id)}
+                onClick={handleRemoveWidget(layoutWidgetId)}
                 className={cn("ml-auto")}
               >
                 <Cross2Icon />
               </Button>
             )}
           </div>
+          {widgetContent()}
         </div>
       )}
     </Draggable>

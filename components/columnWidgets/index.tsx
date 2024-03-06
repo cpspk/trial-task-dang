@@ -3,14 +3,16 @@ import { Widget } from '@/components/widget'
 import { useQuery } from '@tanstack/react-query'
 import { Widget as PrismaWidgets } from "@prisma/client"
 import { Droppable } from "react-beautiful-dnd"
-import { cn } from "@/lib/utils"
+import { useDashboard } from "@/app/providers/dashboardProvider"
 
-export const ColumnWidgets: React.FC<{ widgetIds: number[], index: number }> = ({ widgetIds, index }) => {
+export const ColumnWidgets: React.FC<{ layoutWidgetIds: number[], index: number }> = ({ layoutWidgetIds, index }) => {
   const error = console.error;
   console.error = (...args: any) => {
     if (/defaultProps/.test(args[0])) return;
     error(...args);
   };
+
+  const { selectedDashboard } = useDashboard()
 
   const { data: widgets, isPending } = useQuery<PrismaWidgets[]>({
     queryKey: ["widgets"],
@@ -35,13 +37,18 @@ export const ColumnWidgets: React.FC<{ widgetIds: number[], index: number }> = (
               className={snapshot.isDraggingOver ? "bg-green-200 w-full h-full" : "bg-inherit w-full h-full"}
             >
               {
-                widgetIds.map((widgetId, index) => widgetMap[widgetId] && (
-                  <Widget
-                    key={widgetMap[widgetId].id}
-                    index={index}
-                    widget={widgetMap[widgetId]}
-                  />
-                ))
+                layoutWidgetIds.map((layoutWidgetId, index) => {
+                  const widgetId = selectedDashboard?.widgets?.find(layoutWidget => layoutWidget.id === layoutWidgetId)?.widgetId
+
+                  return widgetId && (
+                    <Widget
+                      key={layoutWidgetId}
+                      index={index}
+                      widget={widgetMap[widgetId]}
+                      layoutWidgetId={layoutWidgetId}
+                    />
+                  )
+                })
               }
               {provided.placeholder}
             </div>
