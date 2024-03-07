@@ -58,7 +58,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Layout, LayoutWidgets, Widget } from "@prisma/client"
 import { useDashboard } from "@/app/providers/dashboardProvider"
-import { checkKeyDown } from "@/utils/keyDown"
+import { LoaderIcon } from "lucide-react"
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
 
@@ -70,7 +70,7 @@ const FormSchema = z.object({
   dashboardname: z.string().min(2, {
     message: "Dashboard name must be at least 2 characters.",
   }),
-  widgets: z.array(z.object({ label: z.string(), value: z.string() }))
+  widgets: z.array(z.object({ label: z.string(), value: z.string() })).min(1)
 })
 
 export default function DashboardSwitcher({ className, widgets }: DashboardSwitcherProps) {
@@ -82,13 +82,6 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
     queryKey: ["layouts"],
     queryFn: () => fetch("/api/layouts").then((res) => res.json()),
   })
-
-  const defaultWidgets: Option[] = widgets ? widgets?.map(widget => {
-    return {
-      label: widget.widgetName,
-      value: widget.id.toString(),
-    }
-  }) : []
 
   useEffect(() => {
     if (dashboards !== undefined) {
@@ -113,14 +106,17 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
     },
   })
 
-  const { mutate: createDashboard } = useMutation({
+  const { mutate: createDashboard, isPending } = useMutation({
     mutationFn: (layout: z.infer<typeof FormSchema>) =>
       fetch("/api/layouts", {
         method: "POST",
         body: JSON.stringify({
           ...layout, widgets: layout.widgets.map(widget => { return { id: Number(widget.value) } })
         }),
-      }).then(res => {
+      }).then(() => {
+        setShowNewDashboardDialog(false)
+        setToggleLayoutEdit(false)
+        form.reset()
         refetch()
       }),
   })
@@ -133,13 +129,6 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
         refetch()
       }),
   })
-
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    createDashboard(data)
-    setShowNewDashboardDialog(false)
-    setToggleLayoutEdit(false)
-    form.reset()
-  }
 
   const handleResetForm = () => {
     form.reset()
@@ -245,7 +234,7 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
       </Popover>
       <DialogContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} onKeyDown={(e) => checkKeyDown(e)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(data => createDashboard(data))} className="space-y-6">
             <DialogHeader>
               <DialogTitle>Create Dashboard</DialogTitle>
               <DialogDescription>
@@ -273,19 +262,22 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
                   <FormField
                     control={form.control}
                     name="widgets"
-                    render={({ field }) => (
+                    render={({ field: { ref, ...props }}) => (
                       <FormItem>
                         <FormLabel>Widgets (Pick order arranges initial layout)</FormLabel>
                         <FormControl>
                           <MultipleSelector
-                            defaultOptions={defaultWidgets ? defaultWidgets : []}
+                            defaultOptions={widgets?.map(widget => ({
+                              label: widget.widgetName,
+                              value: widget.id.toString(),
+                            })) ?? []}
                             placeholder="Select widgets"
                             emptyIndicator={
                               <p className="text-center text-lg leading-5 text-gray-600 dark:text-gray-400">
                                 no results found.
                               </p>
                             }
-                            {...field}
+                            {...props}
                           />
                         </FormControl>
                         <FormMessage />
@@ -299,7 +291,10 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
               <Button variant="outline" type="button" onClick={handleResetForm}>
                 Cancel
               </Button>
-              <Button type="submit">Create</Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending && <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />}
+                Create
+              </Button>
             </DialogFooter>
           </form>
         </Form>

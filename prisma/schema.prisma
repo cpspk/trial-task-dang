@@ -69,4 +69,6 @@ model LayoutWidgets {
   widget       Widget @relation(fields: [widgetId], references: [id], onDelete: Cascade)
   widgetId     Int    @map("widget_id")
   widgetConfig Json?  @map("widget_config")
+
+  @@map("layout_widgets")
 }
