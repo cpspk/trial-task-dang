@@ -49,7 +49,7 @@ export const Header = () => {
 
   return (
     <div className="border-b">
-      <div className="flex flex-wrap items-center p-4">
+      <div className="flex flex-wrap items-center p-4 gap-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -58,19 +58,19 @@ export const Header = () => {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="mr-2 h-6 w-6"
+          className="mr-2 h-6 w-6 p-1"
         >
           <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
         </svg>
-        {widgets && <DashboardSwitcher widgets={widgets} />}
+        {widgets && <DashboardSwitcher widgets={widgets} className="p-1" />}
         {selectedDashboard.id && (
           <div className="flex flex-wrap">
-            <div className="flex items-center space-x-2 ml-2">
+            <div className="flex items-center space-x-2 ml-2 p-1">
               <Switch id="airplane-mode" checked={toggleLayoutEdit} onCheckedChange={setToggleLayoutEdit} />
               <Label htmlFor="airplane-mode">Edit Dashboard</Label>
             </div>
             {toggleLayoutEdit && (
-              <div className="ml-3">
+              <div className="ml-3 p-1">
                 <Select value={""} onValueChange={id => addWidget(Number(id))}>
                   <SelectTrigger>
                     <SelectValue placeholder="Add a widget" />
@@ -91,7 +91,7 @@ export const Header = () => {
             Adding widget...
           </>
         )}
-        <div className="ml-auto flex items-center space-x-4">
+        <div className="ml-auto flex items-center space-x-4 p-1">
           <Select onValueChange={() => signOut()}>
             <SelectTrigger>
               <SelectValue placeholder={walletAddress} />
