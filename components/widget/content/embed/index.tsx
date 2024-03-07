@@ -48,11 +48,15 @@ export const EmbedSetting: React.FC<WidgetSettingBasicProps> = ({
 }
 
 export const EmbedWidget: React.FC<WidgetProps<{ url: string }>> = ({ config }) => (
-  <Iframe
-    url={config.url}
-    width="100%"
-    height="100%"
-    display="block"
-    position="relative"
-  />
+  <div>
+    <Iframe
+      url={config.url}
+      width="100%"
+      height="100%"
+      display="block"
+      position="relative"
+      className="min-h-96"
+    />
+    <div className='mt-1 bg-slate-300'>{config.url}</div>
+  </div>
 )

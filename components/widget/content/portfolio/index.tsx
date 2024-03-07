@@ -15,13 +15,15 @@ const formatter = new Intl.NumberFormat('en-US', {
 export const PortfolioWidget: React.FC = () => {
   const wallet = useWallet()
 
-  const { data, isPending } = useQuery<{ totalWalletBalance: number; assets: any[] }>({
+  const { data, isPending, } = useQuery<{ totalWalletBalance: number; assets: any[] }>({
     queryKey: ["portfolio"],
     queryFn: () => fetch(`/api/portfolio?wallet=${wallet}`).then(res => res.json()),
-    refetchInterval: 3000
+    refetchInterval: 3000,
   })
 
-  if (isPending || !data) {
+
+
+  if (isPending || !data || !data.assets) {
     return (
       <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />
     )
@@ -29,7 +31,7 @@ export const PortfolioWidget: React.FC = () => {
 
   return (
     <div className="space-y-2">
-      <div>Total wallet balance: ${formatter.format(data.totalWalletBalance)}</div>
+      <div>Total wallet balance: ${formatter.format(data.totalWalletBalance ? data.totalWalletBalance : 0)}</div>
       {data.assets.map((item, key) => (
         <div key={key} className="gap-2 flex items-center flex-wrap">
           <div>{item.name}</div>

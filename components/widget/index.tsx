@@ -50,10 +50,9 @@ export const Widget: React.FC<{
         <div
           className="border-2 rounded p-1 m-2 select-none"
           {...provided.draggableProps}
-          {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <div className="flex items-center flex-wrap">
+          <div className="flex items-center flex-wrap"  {...provided.dragHandleProps}>
             <div className="mr-2">{widget.widgetName}</div>
             {toggleLayoutEdit && (
               <div className="flex ml-auto">

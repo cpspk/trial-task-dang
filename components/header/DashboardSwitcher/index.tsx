@@ -121,7 +121,7 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
       }),
   })
 
-  const { mutate: deleteDashboard } = useMutation({
+  const { mutate: deleteDashboard, isPaused: deletePending } = useMutation({
     mutationFn: (id: number) =>
       fetch("/api/layouts/" + id, {
         method: "DELETE",
@@ -205,7 +205,10 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDeleteDashboard(dashboard.id)}>Confirm</AlertDialogAction>
+                        <AlertDialogAction onClick={() => handleDeleteDashboard(dashboard.id)} disabled={deletePending}>
+                          {deletePending && <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />}
+                          Confirm
+                        </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
@@ -262,7 +265,7 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
                   <FormField
                     control={form.control}
                     name="widgets"
-                    render={({ field: { ref, ...props }}) => (
+                    render={({ field: { ref, ...props } }) => (
                       <FormItem>
                         <FormLabel>Widgets (Pick order arranges initial layout)</FormLabel>
                         <FormControl>

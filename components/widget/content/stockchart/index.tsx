@@ -64,11 +64,14 @@ export const StockChartWidget: React.FC<WidgetProps<{ symbol: string }>> = ({ co
   }
 
   return (
-    <TVChart
-      symbol={`${config.symbol.toUpperCase()} / ${data.quoteToken}`}
-      pairAddress={data.pair}
-      initialPrice="500"
-      onChartReady={() => {}}
-    />
+    <div>
+      <TVChart
+        symbol={`${config.symbol.toUpperCase()} / ${data.quoteToken}`}
+        pairAddress={data.pair}
+        initialPrice="500"
+        onChartReady={() => { }}
+      />
+      <div className='mt-1 bg-slate-300'>{config.symbol}</div>
+    </div>
   )
 }
