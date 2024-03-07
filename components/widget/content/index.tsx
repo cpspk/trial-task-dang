@@ -5,11 +5,14 @@ import { WidgetSettingBasicProps } from "./setting"
 import { useDashboard } from "@/app/providers/dashboardProvider"
 import { EmbedWidget, EmbedSetting } from "./embed"
 import { StockChartSetting, StockChartWidget } from "./stockchart"
+import { PriceTickerWidget } from "./priceticker"
+import { LoaderIcon } from "lucide-react"
 
 interface WidgetContentProps {
   layoutWidgetId: number,
   widget: Widget,
   settingMode: boolean,
+  isDeletePending?: boolean,
   setSettingMode: (value: boolean) => void
 }
 
@@ -17,11 +20,11 @@ export interface WidgetProps<WidgetConfig> {
   config: WidgetConfig
 }
 
-const settings: Record<WidgetName, React.FC<WidgetSettingBasicProps>> = {
+const settings: Record<WidgetName, React.FC<WidgetSettingBasicProps> | null> = {
   EmbedWidget: EmbedSetting,
   RssNewsReader: EmbedSetting,
   StockChart: StockChartSetting,
-  PriceTicker: EmbedSetting,
+  PriceTicker: null,
   PortfolioTracker: EmbedSetting,
 }
 
@@ -29,7 +32,7 @@ const widgets: Record<WidgetName, React.FC<WidgetProps<any>>> = {
   EmbedWidget: EmbedWidget,
   RssNewsReader: EmbedWidget,
   StockChart: StockChartWidget,
-  PriceTicker: EmbedWidget,
+  PriceTicker: PriceTickerWidget,
   PortfolioTracker: EmbedWidget
 }
 
@@ -37,7 +40,8 @@ export const Content: React.FC<WidgetContentProps> = ({
   widget,
   layoutWidgetId,
   settingMode,
-  setSettingMode
+  setSettingMode,
+  isDeletePending
 }) => {
   const {
     toggleLayoutEdit,
@@ -75,11 +79,23 @@ export const Content: React.FC<WidgetContentProps> = ({
 
   const Widget = widgets[widget.widgetName]
 
-  if (settingMode && toggleLayoutEdit) {
+  if (isDeletePending) {
+    return (
+      <div className="flex">
+        {isDeletePending && <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />}
+        Deleting
+      </div>
+    )
+  }
+  if (settingMode && toggleLayoutEdit && Setting) {
     return <Setting onSubmit={updateLayoutWidget} onBack={() => setSettingMode(false)} isPending={isPending} />
   }
 
   if (layoutWidget?.widgetConfig) {
+    return <Widget config={layoutWidget?.widgetConfig} />
+  }
+
+  if (widget.widgetName === "PriceTicker") {
     return <Widget config={layoutWidget?.widgetConfig} />
   }
 

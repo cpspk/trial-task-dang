@@ -19,7 +19,7 @@ export const Widget: React.FC<{
     setSelectedDashboard
   } = useDashboard()
 
-  const { mutate: removeWidget } = useMutation({
+  const { mutate: removeWidget, isPending } = useMutation({
     mutationFn: (id: number) => {
       const layoutConfig = selectedDashboard.layoutConfig?.map(column => column.filter(widgetId => widgetId !== id))
 
@@ -40,10 +40,6 @@ export const Widget: React.FC<{
 
   const [settingMode, setSettingMode] = useState(false)
 
-  const handleRemoveWidget = (id: number) => () => {
-    removeWidget(id)
-  }
-
   return (
     <Draggable
       draggableId={layoutWidgetId.toString()}
@@ -57,19 +53,21 @@ export const Widget: React.FC<{
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <div className="flex items-center">
+          <div className="flex items-center flex-wrap">
             <div className="mr-2">{widget.widgetName}</div>
             {toggleLayoutEdit && (
               <div className="flex ml-auto">
+                {widget.widgetName !== "PriceTicker" && (
+                  <Button
+                    variant="outline"
+                    onClick={() => setSettingMode(true)}
+                  >
+                    <GearIcon />
+                  </Button>
+                )}
                 <Button
                   variant="outline"
-                  onClick={() => setSettingMode(true)}
-                >
-                  <GearIcon />
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={handleRemoveWidget(layoutWidgetId)}
+                  onClick={() => removeWidget(layoutWidgetId)}
                   className="ml-1"
                 >
                   <Cross2Icon />
@@ -83,6 +81,7 @@ export const Widget: React.FC<{
             layoutWidgetId={layoutWidgetId}
             settingMode={settingMode}
             setSettingMode={setSettingMode}
+            isDeletePending={isPending}
           />
         </div>
       )}

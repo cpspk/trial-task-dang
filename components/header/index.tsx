@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch"
 import { useDashboard } from "@/app/providers/dashboardProvider"
 import { Widget } from "@prisma/client"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { LoaderIcon } from "lucide-react"
 
 export const Header = () => {
   const { data } = useSession()
@@ -29,7 +30,7 @@ export const Header = () => {
     queryFn: () => fetch("/api/widgets").then((res) => res.json()),
   })
 
-  const { mutate: addWidget } = useMutation({
+  const { mutate: addWidget, isPending } = useMutation({
     mutationFn: (id: number) => {
       return fetch("/api/layouts/" + selectedDashboard.id + "/layoutWidgets", {
         method: "POST",
@@ -45,18 +46,6 @@ export const Header = () => {
       })
     }
   })
-
-  const handleLogout = () => {
-    signOut()
-  }
-
-  const handleEditDashboard = (value: boolean) => {
-    setToggleLayoutEdit(value)
-  }
-
-  const handleAddWidget = (id: string) => {
-    addWidget(Number(id))
-  }
 
   return (
     <div className="border-b">
@@ -77,12 +66,12 @@ export const Header = () => {
         {selectedDashboard.id && (
           <div className="flex flex-wrap">
             <div className="flex items-center space-x-2 ml-2">
-              <Switch id="airplane-mode" checked={toggleLayoutEdit} onCheckedChange={handleEditDashboard} />
+              <Switch id="airplane-mode" checked={toggleLayoutEdit} onCheckedChange={setToggleLayoutEdit} />
               <Label htmlFor="airplane-mode">Edit Dashboard</Label>
             </div>
             {toggleLayoutEdit && (
               <div className="ml-3">
-                <Select value={""} onValueChange={handleAddWidget}>
+                <Select value={""} onValueChange={id => addWidget(Number(id))}>
                   <SelectTrigger>
                     <SelectValue placeholder="Add a widget" />
                   </SelectTrigger>
@@ -96,8 +85,14 @@ export const Header = () => {
             )}
           </div>
         )}
+        {isPending && (
+          <>
+            <LoaderIcon className="ml-4 mr-2 h-4 w-4 animate-spin" />
+            Adding widget...
+          </>
+        )}
         <div className="ml-auto flex items-center space-x-4">
-          <Select onValueChange={handleLogout}>
+          <Select onValueChange={() => signOut()}>
             <SelectTrigger>
               <SelectValue placeholder={walletAddress} />
             </SelectTrigger>

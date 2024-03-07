@@ -12,7 +12,10 @@ async function main() {
         widgetName: WidgetName.StockChart,
         widgetDescription: "Stock chart"
       },
-      { widgetName: WidgetName.PriceTicker },
+      {
+        widgetName: WidgetName.PriceTicker,
+        widgetDescription: "Price Ticker"
+      },
       { widgetName: WidgetName.PortfolioTracker },
     ]
   })
