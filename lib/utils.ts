@@ -4,3 +4,10 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+export const abbrAddress = (address: string) => address.substring(0, 7) + '...' + address.substring(address.length - 5)
+
+export const numberFormatter = new Intl.NumberFormat('en-US', {
+  minimumFractionDigits: 3,
+  maximumFractionDigits: 3
+});

@@ -7,6 +7,7 @@ import { EmbedWidget, EmbedSetting } from "./embed"
 import { StockChartSetting, StockChartWidget } from "./stockchart"
 import { PriceTickerWidget } from "./priceticker"
 import { LoaderIcon } from "lucide-react"
+import { PortfolioWidget } from "./portfolio"
 
 interface WidgetContentProps {
   layoutWidgetId: number,
@@ -25,7 +26,7 @@ const settings: Record<WidgetName, React.FC<WidgetSettingBasicProps> | null> = {
   RssNewsReader: EmbedSetting,
   StockChart: StockChartSetting,
   PriceTicker: null,
-  PortfolioTracker: EmbedSetting,
+  PortfolioTracker: null,
 }
 
 const widgets: Record<WidgetName, React.FC<WidgetProps<any>>> = {
@@ -33,7 +34,7 @@ const widgets: Record<WidgetName, React.FC<WidgetProps<any>>> = {
   RssNewsReader: EmbedWidget,
   StockChart: StockChartWidget,
   PriceTicker: PriceTickerWidget,
-  PortfolioTracker: EmbedWidget
+  PortfolioTracker: PortfolioWidget
 }
 
 export const Content: React.FC<WidgetContentProps> = ({
@@ -95,7 +96,7 @@ export const Content: React.FC<WidgetContentProps> = ({
     return <Widget config={layoutWidget?.widgetConfig} />
   }
 
-  if (widget.widgetName === "PriceTicker") {
+  if (widget.widgetName === "PriceTicker" || widget.widgetName === "PortfolioTracker") {
     return <Widget config={layoutWidget?.widgetConfig} />
   }
 

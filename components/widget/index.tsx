@@ -57,7 +57,7 @@ export const Widget: React.FC<{
             <div className="mr-2">{widget.widgetName}</div>
             {toggleLayoutEdit && (
               <div className="flex ml-auto">
-                {widget.widgetName !== "PriceTicker" && (
+                {widget.widgetName !== "PriceTicker" && widget.widgetName !== "PortfolioTracker" && (
                   <Button
                     variant="outline"
                     onClick={() => setSettingMode(true)}

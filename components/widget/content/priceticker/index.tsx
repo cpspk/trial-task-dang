@@ -4,6 +4,7 @@ import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { LoaderIcon } from 'lucide-react'
 import clsx from 'clsx'
+import { numberFormatter } from '@/lib/utils'
 
 export type TrendingType = {
   name: string,
@@ -11,11 +12,6 @@ export type TrendingType = {
   price: number,
   price_change_percentage_24h: number
 }
-
-const formatter = new Intl.NumberFormat('en-US', {
-  minimumFractionDigits: 3,
-  maximumFractionDigits: 3
-});
 
 export const PriceTickerWidget: React.FC = () => {
   const { data, isPending } = useQuery<TrendingType[]>({
@@ -38,9 +34,9 @@ export const PriceTickerWidget: React.FC = () => {
           <div className="flex items-center gap-2 flex-wrap">
             <div>{item.name}</div>
             <img src={item.avatar} alt={item.name} className="w-4 h-4" />
-            <div>{formatter.format(item.price)}</div>
+            <div>{numberFormatter.format(item.price)}</div>
             <div className={clsx(item.price_change_percentage_24h > 0 ? "text-green-600" : "text-red-600")}>
-              {formatter.format(item.price_change_percentage_24h)}%
+              {numberFormatter.format(item.price_change_percentage_24h)}%
             </div>
           </div>
         </div>

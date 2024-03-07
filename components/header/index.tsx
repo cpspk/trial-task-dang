@@ -1,3 +1,4 @@
+"use client"
 import DashboardSwitcher from "./DashboardSwitcher"
 import {
   Select,
@@ -6,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useSession } from "next-auth/react"
 import { signOut } from "next-auth/react"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
@@ -14,10 +14,12 @@ import { useDashboard } from "@/app/providers/dashboardProvider"
 import { Widget } from "@prisma/client"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { LoaderIcon } from "lucide-react"
+import useWallet from "@/hooks/useWallet"
+import { abbrAddress } from "@/lib/utils"
 
 export const Header = () => {
-  const { data } = useSession()
-  const walletAddress = data?.user.walletAddress.substring(0, 7) + '...' + data?.user.walletAddress.substring(data?.user.walletAddress.length - 5)
+  const wallet = useWallet()
+
   const {
     selectedDashboard,
     setSelectedDashboard,
@@ -93,9 +95,11 @@ export const Header = () => {
         )}
         <div className="ml-auto flex items-center space-x-4 p-1">
           <Select onValueChange={() => signOut()}>
-            <SelectTrigger>
-              <SelectValue placeholder={walletAddress} />
-            </SelectTrigger>
+            {wallet && (
+              <SelectTrigger>
+                <SelectValue placeholder={abbrAddress(wallet)} />
+              </SelectTrigger>
+            )}
             <SelectContent>
               <SelectItem value="logout">Logout</SelectItem>
             </SelectContent>

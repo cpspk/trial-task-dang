@@ -10,8 +10,11 @@ export async function GET() {
     return NextResponse.json([], { status: 401 })
   }
 
-  const widgets = await prisma.widget.findMany({
-  })
-
-  return NextResponse.json(widgets)
+  try {
+    const widgets = await prisma.widget.findMany()
+  
+    return NextResponse.json(widgets)
+  } catch (err) {
+    return NextResponse.json(err, { status: 500 });
+  }
 }
