@@ -1,9 +1,10 @@
 import React from "react";
 import { Widget, WidgetName } from "@prisma/client"
-import { EmbedWidget, EmbedSetting } from "./embed"
-import { useDashboard } from "@/app/providers/dashboardProvider"
-import { WidgetSettingBasicProps } from "./setting"
 import { useMutation } from "@tanstack/react-query"
+import { WidgetSettingBasicProps } from "./setting"
+import { useDashboard } from "@/app/providers/dashboardProvider"
+import { EmbedWidget, EmbedSetting } from "./embed"
+import { StockChartSetting, StockChartWidget } from "./stockchart"
 
 interface WidgetContentProps {
   layoutWidgetId: number,
@@ -19,7 +20,7 @@ export interface WidgetProps<WidgetConfig> {
 const settings: Record<WidgetName, React.FC<WidgetSettingBasicProps>> = {
   EmbedWidget: EmbedSetting,
   RssNewsReader: EmbedSetting,
-  StockChart: EmbedSetting,
+  StockChart: StockChartSetting,
   PriceTicker: EmbedSetting,
   PortfolioTracker: EmbedSetting,
 }
@@ -27,7 +28,7 @@ const settings: Record<WidgetName, React.FC<WidgetSettingBasicProps>> = {
 const widgets: Record<WidgetName, React.FC<WidgetProps<any>>> = {
   EmbedWidget: EmbedWidget,
   RssNewsReader: EmbedWidget,
-  StockChart: EmbedWidget,
+  StockChart: StockChartWidget,
   PriceTicker: EmbedWidget,
   PortfolioTracker: EmbedWidget
 }
@@ -46,7 +47,7 @@ export const Content: React.FC<WidgetContentProps> = ({
 
   const layoutWidget = selectedDashboard.widgets?.filter(item => item.id === layoutWidgetId)[0]
 
-  const { mutate: updateLayoutWidget } = useMutation({
+  const { mutate: updateLayoutWidget, isPending } = useMutation({
     mutationFn: (widgetConfig) => {
       return fetch("/api/layouts/" + selectedDashboard.id + "/layoutWidgets/" + layoutWidgetId, {
         method: "PUT",
@@ -75,7 +76,7 @@ export const Content: React.FC<WidgetContentProps> = ({
   const Widget = widgets[widget.widgetName]
 
   if (settingMode && toggleLayoutEdit) {
-    return <Setting onSubmit={updateLayoutWidget} onBack={() => setSettingMode(false)} />
+    return <Setting onSubmit={updateLayoutWidget} onBack={() => setSettingMode(false)} isPending={isPending} />
   }
 
   if (layoutWidget?.widgetConfig) {

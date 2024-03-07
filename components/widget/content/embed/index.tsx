@@ -19,7 +19,8 @@ const FormSchema = z.object({
 
 export const EmbedSetting: React.FC<WidgetSettingBasicProps> = ({
   onSubmit,
-  onBack
+  onBack,
+  isPending
 }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -29,7 +30,7 @@ export const EmbedSetting: React.FC<WidgetSettingBasicProps> = ({
   })
 
   return (
-    <WidgetSetting form={form} onSubmit={onSubmit} onBack={onBack}>
+    <WidgetSetting form={form} onSubmit={onSubmit} onBack={onBack} isPending={isPending}>
       <FormField
         control={form.control}
         name="url"
