@@ -9,6 +9,7 @@ import { PriceTickerWidget } from "./priceticker"
 import { LoaderIcon } from "lucide-react"
 import { PortfolioWidget } from "./portfolio"
 import { RssWidget, RssSetting } from "./rss"
+import { QuoteWidget } from "./quote"
 
 interface WidgetContentProps {
   layoutWidgetId: number,
@@ -28,6 +29,7 @@ const settings: Record<WidgetName, React.FC<WidgetSettingBasicProps> | null> = {
   StockChart: StockChartSetting,
   PriceTicker: null,
   PortfolioTracker: null,
+  Quote: null,
 }
 
 const widgets: Record<WidgetName, React.FC<WidgetProps<any>>> = {
@@ -35,7 +37,8 @@ const widgets: Record<WidgetName, React.FC<WidgetProps<any>>> = {
   RssNewsReader: RssWidget,
   StockChart: StockChartWidget,
   PriceTicker: PriceTickerWidget,
-  PortfolioTracker: PortfolioWidget
+  PortfolioTracker: PortfolioWidget,
+  Quote: QuoteWidget
 }
 
 export const Content: React.FC<WidgetContentProps> = ({
@@ -97,8 +100,15 @@ export const Content: React.FC<WidgetContentProps> = ({
     return <Widget config={layoutWidget?.widgetConfig} />
   }
 
-  if (widget.widgetName === "PriceTicker" || widget.widgetName === "PortfolioTracker") {
+  if (
+    widget.widgetName === "PriceTicker" ||
+    widget.widgetName === "PortfolioTracker"
+  ) {
     return <Widget config={layoutWidget?.widgetConfig} />
+  }
+
+  if (widget.widgetName === "Quote") {
+    return <Widget config={{ layoutWidgetId }} />
   }
 
   return (

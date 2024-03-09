@@ -3,7 +3,6 @@
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { LoaderIcon } from 'lucide-react'
-import clsx from 'clsx'
 import useWallet from '@/hooks/useWallet'
 import { numberFormatter } from '@/lib/utils'
 

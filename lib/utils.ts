@@ -10,4 +10,6 @@ export const abbrAddress = (address: string) => address.substring(0, 7) + '...' 
 export const numberFormatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 3,
   maximumFractionDigits: 3
-});
+})
+
+export const getRandomInt = (max: number) => Math.floor(Math.random() * max)

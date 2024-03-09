@@ -41,6 +41,7 @@ enum WidgetName {
   StockChart
   PriceTicker
   PortfolioTracker
+  Quote
 }
 
 model Widget {

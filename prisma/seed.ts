@@ -23,6 +23,10 @@ async function main() {
         widgetName: WidgetName.PortfolioTracker,
         widgetDescription: "Fetch real-time prices and calculate portfolio value for the connected wallet of the user."
       },
+      {
+        widgetName: WidgetName.Quote,
+        widgetDescription: "Inspirational quotes."
+      },
     ]
   })
 
