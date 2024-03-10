@@ -42,6 +42,7 @@ enum WidgetName {
   PriceTicker
   PortfolioTracker
   Quote
+  AnalogClock
 }
 
 model Widget {

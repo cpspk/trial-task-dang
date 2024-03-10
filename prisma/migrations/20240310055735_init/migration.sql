@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "WidgetName" AS ENUM ('EmbedWidget', 'RssNewsReader', 'StockChart', 'PriceTicker', 'PortfolioTracker', 'Quote');
+CREATE TYPE "WidgetName" AS ENUM ('EmbedWidget', 'RssNewsReader', 'StockChart', 'PriceTicker', 'PortfolioTracker', 'Quote', 'AnalogClock');
 
 -- CreateTable
 CREATE TABLE "users" (

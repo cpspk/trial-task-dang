@@ -9,7 +9,7 @@ async function main() {
       },
       {
         widgetName: WidgetName.RssNewsReader,
-        widgetDescription: "Fetch news from specified RSS source  "
+        widgetDescription: "Fetch news from specified RSS source"
       },
       {
         widgetName: WidgetName.StockChart,
@@ -21,12 +21,16 @@ async function main() {
       },
       {
         widgetName: WidgetName.PortfolioTracker,
-        widgetDescription: "Fetch real-time prices and calculate portfolio value for the connected wallet of the user."
+        widgetDescription: "Fetch real-time prices and calculate portfolio value for the connected wallet of the user"
       },
       {
         widgetName: WidgetName.Quote,
-        widgetDescription: "Inspirational quotes."
+        widgetDescription: "Inspirational quotes"
       },
+      {
+        widgetName: WidgetName.AnalogClock,
+        widgetDescription: "Analog clock that support multiple time zones"
+      }
     ]
   })
 

@@ -5,6 +5,7 @@ import { WidgetSettingBasicProps } from "./setting"
 import { useDashboard } from "@/app/providers/dashboardProvider"
 import { EmbedWidget, EmbedSetting } from "./embed"
 import { StockChartSetting, StockChartWidget } from "./stockchart"
+import { AnalogClockSetting, AnalogClockWidget } from "./analogClock"
 import { PriceTickerWidget } from "./priceticker"
 import { LoaderIcon } from "lucide-react"
 import { PortfolioWidget } from "./portfolio"
@@ -30,6 +31,7 @@ const settings: Record<WidgetName, React.FC<WidgetSettingBasicProps> | null> = {
   PriceTicker: null,
   PortfolioTracker: null,
   Quote: null,
+  AnalogClock: AnalogClockSetting
 }
 
 const widgets: Record<WidgetName, React.FC<WidgetProps<any>>> = {
@@ -38,7 +40,8 @@ const widgets: Record<WidgetName, React.FC<WidgetProps<any>>> = {
   StockChart: StockChartWidget,
   PriceTicker: PriceTickerWidget,
   PortfolioTracker: PortfolioWidget,
-  Quote: QuoteWidget
+  Quote: QuoteWidget,
+  AnalogClock: AnalogClockWidget
 }
 
 export const Content: React.FC<WidgetContentProps> = ({
