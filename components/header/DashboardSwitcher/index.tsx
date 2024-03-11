@@ -138,6 +138,7 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
   const handleDeleteDashboard = (id: number) => {
     deleteDashboard(id)
     setToggleLayoutEdit(false)
+    setOpen(false)
   }
 
   return (
@@ -183,7 +184,6 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
                     )}
                   />
                   {dashboard.layoutName}
-
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
@@ -204,8 +204,15 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDeleteDashboard(dashboard.id)} disabled={deletePending}>
+                        <AlertDialogCancel onClick={e => e.stopPropagation()}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            e.preventDefault()
+                            handleDeleteDashboard(dashboard.id)
+                          }}
+                          disabled={deletePending}
+                        >
                           {deletePending && <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />}
                           Confirm
                         </AlertDialogAction>
