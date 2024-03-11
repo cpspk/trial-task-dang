@@ -121,7 +121,7 @@ export default function DashboardSwitcher({ className, widgets }: DashboardSwitc
       }),
   })
 
-  const { mutate: deleteDashboard, isPaused: deletePending } = useMutation({
+  const { mutate: deleteDashboard, isPending: deletePending } = useMutation({
     mutationFn: (id: number) =>
       fetch("/api/layouts/" + id, {
         method: "DELETE",

@@ -36,6 +36,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         toast({
           description: "Please install MetaMask first.",
         })
+        setIsLoading(false)
         return;
       }
 
